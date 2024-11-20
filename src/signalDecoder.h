@@ -41,7 +41,6 @@ extern "C" {
 #include "bitbuffer.h"
 #include "fatal.h"
 #include "list.h"
-#include "pulse_analyzer.h"
 #include "pulse_detect.h"
 #include "r_api.h"
 #include "r_private.h"
