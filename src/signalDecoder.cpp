@@ -25,24 +25,10 @@
 
 #include "signalDecoder.h"
 
-
-/*-------------------------- rtl_433_Decoder_ESP Internals --------------------------*/
-
-#ifndef rtl_433_Decoder_Stack
-#  if OOK_MODULATION
-#    define rtl_433_Decoder_Stack 11500
-#  else
-#    define rtl_433_Decoder_Stack 20000
-#  endif
-#endif
-
-#define rtl_433_Decoder_Priority 2
-#define rtl_433_Decoder_Core     1
-
-
 void rtl_433_Decoder::rtlSetup() {
   r_cfg_t* cfg = &g_cfg;
-  
+  int rtl_433_Decoder_Stack=11500;
+
   if (!cfg->demod) {
     r_init_cfg(cfg);
 
@@ -51,6 +37,7 @@ void rtl_433_Decoder::rtlSetup() {
       cfg->num_r_devices = NUMOF_OOK_DEVICES;
     } else {
       cfg->num_r_devices = NUMOF_FSK_DEVICES;
+      rtl_433_Decoder_Stack=20000;
     }
     cfg->devices = (r_device*)calloc(cfg->num_r_devices, sizeof(r_device));
 
@@ -115,9 +102,6 @@ void rtl_433_Decoder::rtl_433_DecoderTask(void* pvParameters) {
 //    logprintfLn(LOG_DEBUG, "rtl_433_DecoderTask awaiting signal");
     xQueueReceive(thistask->rtl_433_Queue, &rtl_pulses, portMAX_DELAY);
     // logprintfLn(LOG_DEBUG, "rtl_433_DecoderTask signal received");
-#ifdef MEMORY_DEBUG
-    unsigned long signalProcessingStart = micros();
-#endif
 
     rtl_pulses->sample_rate = 1.0e6;
     cfg->demod->pulse_data = *rtl_pulses;

@@ -30,6 +30,10 @@
 #include <freertos/queue.h>
 #include <freertos/task.h>
 
+// Decoder task settings
+#define rtl_433_Decoder_Priority 2
+#define rtl_433_Decoder_Core     1
+
 #include <cstring>
 #include <vector>
 
@@ -56,13 +60,23 @@ public:
   // construct
   rtl_433_Decoder(bool ookModulation = true) : _ookModulation(ookModulation), g_cfg({0}) {}
 
+  // call this to setup the decoder
   void rtlSetup();
-  static void rtl_433_DecoderTask(void* pvParameters);
-
+  /// @brief Set callback function for receiving decoded messages
+  /// @param callback Pointer to callback function
+  /// @param messageBuffer Pointer to buffer for message
+  /// @param bufferSize Size of message buffer
+  /// @param ctx Optional context pointer for callback
   void setCallback(rtl_433_ESPCallBack callback, char* messageBuffer,
                    int bufferSize, void* ctx);
+  // process rtl_433 format pulsa_data_t pulses
   void processSignal(pulse_data_t* rtl_pulses);
+  /// @brief Process raw format data.
+  /// @param rawdata Vector of on/mark (positive integer microseconds) and off/space (negative integer microseconds)
   void processRaw(std::vector<int>& rawdata);
+
+protected:
+  static void rtl_433_DecoderTask(void* pvParameters);
 
 private:
   bool _ookModulation = true;
