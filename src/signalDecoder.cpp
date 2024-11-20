@@ -66,7 +66,7 @@ void rtl_433_Decoder::rtlSetup() {
       }
     }
 
-    rtl_433_Queue = xQueueCreate(5, sizeof(pulse_data_t*));
+    rtl_433_Queue = xQueueCreate(5, sizeof(decode_job_t*));
 
     xTaskCreatePinnedToCore(
         this->rtl_433_DecoderTask, /* Function to implement the task */
