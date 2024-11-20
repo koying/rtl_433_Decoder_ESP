@@ -63,7 +63,9 @@ typedef struct decode_job {
 class rtl_433_Decoder {
 public:
   // construct
-  rtl_433_Decoder(bool ookModulation = true) : _ookModulation(ookModulation), g_cfg({0}) {}
+  rtl_433_Decoder(bool ookModulation = true) : _ookModulation(ookModulation) {
+    memset(&g_cfg, 0, sizeof(r_cfg_t));
+  }
 
   // call this to setup the decoder
   void rtlSetup();
