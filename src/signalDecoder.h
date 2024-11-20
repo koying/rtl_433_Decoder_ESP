@@ -1,5 +1,6 @@
 /*
-  rtl_433_ESP - 433.92 MHz protocols library for ESP32
+  rtl_433_Decoder_ESP - 433.92 MHz protocols library for ESP32
+    based on rtl_433_ESP
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -16,9 +17,8 @@
 
   Project Structure
 
-  rtl_433_ESP - Main Class
-  decoder.cpp - Wrapper and interface for the rtl_433 classes
-  receiver.cpp - Wrapper and interface for RadioLib
+  rtl_433_Decoder - Main Class
+  signalDecoder.cpp - Wrapper and interface for the rtl_433 classes
   rtl_433 - subset of rtl_433 package
 
 */
@@ -26,14 +26,12 @@
 #ifndef rtl_433_DECODER_H
 #define rtl_433_DECODER_H
 
+#include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
+#include <freertos/task.h>
+
 #include <cstring>
 #include <vector>
-#include <functional>
-
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
-#include <freertos/queue.h>
-
 
 extern "C" {
 #include "bitbuffer.h"
@@ -49,30 +47,26 @@ extern "C" {
 
 #include "log.h"
 
-
 /*----------------------------- functions -----------------------------*/
 
-typedef void (*rtl_433_ESPCallBack)(char* message,void *ctx);
+typedef void (*rtl_433_ESPCallBack)(char* message, void* ctx);
 
 class rtl_433_Decoder {
 public:
-// construct
-  rtl_433_Decoder(bool ookModulation=true): _ookModulation(ookModulation), g_cfg({0}) {}
+  // construct
+  rtl_433_Decoder(bool ookModulation = true) : _ookModulation(ookModulation), g_cfg({0}) {}
 
   void rtlSetup();
   static void rtl_433_DecoderTask(void* pvParameters);
-  static void rtl_433_DecoderTask2(void* pvParameters);
 
   void setCallback(rtl_433_ESPCallBack callback, char* messageBuffer,
-                    int bufferSize,void* ctx);
-  void _setDebug(int debug);
+                   int bufferSize, void* ctx);
   void processSignal(pulse_data_t* rtl_pulses);
-  void processRaw(std::vector<int> &rawdata );
-
+  void processRaw(std::vector<int>& rawdata);
 
 private:
-  bool _ookModulation=true;
-  int unparsedSignals=0;
+  bool _ookModulation = true;
+  int unparsedSignals = 0;
 
   int rtlVerbose = 0;
 
