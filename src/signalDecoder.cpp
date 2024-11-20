@@ -80,7 +80,7 @@ void rtl_433_Decoder::rtlSetup() {
 }
 
 void rtl_433_Decoder::setCallback(rtl_433_ESPCallBack callback, char* messageBuffer,
-                  int bufferSize,void* ctx) {
+                  int bufferSize) {
   // logprintfLn(LOG_DEBUG, "_setCallback location: %p", callback);
 
   r_cfg_t* cfg = &g_cfg;
@@ -88,51 +88,58 @@ void rtl_433_Decoder::setCallback(rtl_433_ESPCallBack callback, char* messageBuf
   cfg->callback = callback;
   cfg->messageBuffer = messageBuffer;
   cfg->bufferSize = bufferSize;
-  cfg->ctx=ctx;
 }
 
 // ---------------------------------------------------------------------------------------------------------
 
 void rtl_433_Decoder::rtl_433_DecoderTask(void* pvParameters) {
-  rtl_433_Decoder *thistask= (rtl_433_Decoder *) pvParameters; 
+  rtl_433_Decoder* thistask= (rtl_433_Decoder *) pvParameters; 
   r_cfg_t* cfg = &thistask->g_cfg;
+  decode_job_t* job;
 
-  pulse_data_t* rtl_pulses = nullptr;
   for (;;) {
 //    logprintfLn(LOG_DEBUG, "rtl_433_DecoderTask awaiting signal");
-    xQueueReceive(thistask->rtl_433_Queue, &rtl_pulses, portMAX_DELAY);
+    xQueueReceive(thistask->rtl_433_Queue, &job, portMAX_DELAY);
     // logprintfLn(LOG_DEBUG, "rtl_433_DecoderTask signal received");
 
-    rtl_pulses->sample_rate = 1.0e6;
-    cfg->demod->pulse_data = *rtl_pulses;
+    job->rtl_pulses->sample_rate = 1.0e6;
+    cfg->demod->pulse_data = *job->rtl_pulses; 
+    cfg->ctx=job->ctx;
     int events = 0;
 
     if (thistask->_ookModulation) {
-      events = run_ook_demods(&cfg->demod->r_devs, rtl_pulses);
+      events = run_ook_demods(&cfg->demod->r_devs, job->rtl_pulses);
     } else {
-      events = run_fsk_demods(&cfg->demod->r_devs, rtl_pulses);
+      events = run_fsk_demods(&cfg->demod->r_devs, job->rtl_pulses);
     }
 
     if (events == 0) {
       thistask->unparsedSignals++;
     }
 
-    free(rtl_pulses);
+    free(job->rtl_pulses);
+    free(job);
+
   }
 }
 
-void rtl_433_Decoder::processSignal(pulse_data_t* rtl_pulses) {
+void rtl_433_Decoder::processSignal(pulse_data_t* rtl_pulses,void* ctx) {
+    decode_job_t *job=(decode_job_t*) malloc (sizeof(decode_job_t));
+    job->rtl_pulses=rtl_pulses;
+    job->ctx=ctx;
+
   // logprintfLn(LOG_DEBUG, "processSignal() about to place signal on
   // rtl_433_Queue");
-  if (xQueueSend(rtl_433_Queue, &rtl_pulses, 0) != pdTRUE) {
+  if (xQueueSend(rtl_433_Queue, &job, 0) != pdTRUE) {
     logprintfLn(LOG_ERR, "ERROR: rtl_433_Queue full, discarding signal");
     free(rtl_pulses);
+    free(job);
   } else {
     //logprintfLn(LOG_DEBUG, "processSignal() signal placed on rtl_433_Queue");
   }
 }
 
-void rtl_433_Decoder::processRaw(std::vector<int> &rawdata ) {
+void rtl_433_Decoder::processRaw(std::vector<int> &rawdata,void* ctx) {
   pulse_data_t* rtl_pulses = (pulse_data_t*)heap_caps_calloc(1, sizeof(pulse_data_t), MALLOC_CAP_INTERNAL);
   *rtl_pulses = (pulse_data_t const){0};
   // rtl_pulses->sample_rate = 1000000; // us --- already set in modified api
@@ -150,7 +157,7 @@ void rtl_433_Decoder::processRaw(std::vector<int> &rawdata ) {
 
   rtl_pulses->num_pulses=i;
 
-  processSignal(rtl_pulses);
+  processSignal(rtl_pulses,ctx);
 
 }
 

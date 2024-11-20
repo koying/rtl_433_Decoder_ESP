@@ -134,11 +134,11 @@ typedef struct r_cfg {
   // unsigned frames_events; ///< stats counter for interval
   // struct mg_mgr *mgr;
   //
-  //  TODO: rtl_433_ESP additions
+  //  TODO: rtl_433_Decoder_ESP additions
   //
   char *messageBuffer; // message buffer for message callback
   int bufferSize;      // size of message buffer for message callback
-  void *ctx;
+  void *ctx;           // context pointer for callback
   
   /**
    * callback to controlling program to be executed when a message is received.
