@@ -103,7 +103,6 @@ void rtl_433_Decoder::rtl_433_DecoderTask(void* pvParameters) {
     // logprintfLn(LOG_DEBUG, "rtl_433_DecoderTask signal received");
 
     job->rtl_pulses->sample_rate = 1.0e6;
-    cfg->demod->pulse_data = *job->rtl_pulses; 
     cfg->ctx=job->ctx;
     int events = 0;
 
