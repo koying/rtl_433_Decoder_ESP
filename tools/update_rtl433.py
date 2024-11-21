@@ -16,14 +16,13 @@ src/logger.c src/output_log.c src/pulse_data.c src/r_util.c src/util.c
 src/devices/*.c
 """.split()
 
-# manually review for updates
+# forked: manually review for updates
 #src/r_api.c
 #include/pulse_data.h
 #include/r_private.h
 #include/rtl_433.h
 
-
-#include/data.h
+# todo - snapshot rtl_433 git repo version
 
 def do_copy_exact(rtl433dir,outdir):
     for filepattern in copy_exact:
@@ -40,7 +39,7 @@ def main():
     rtl433dir=Path(args.rtl433dir)
     outdir=Path(args.outdir)
 
-    # pulse_detect.c: fix bitbuffer init to be portable
+    # pulse_detect.c: fix bitbuffer init to be portable and global because it's too big to allocate on the task stack
     srcfile=rtl433dir / "src/pulse_slicer.c"
     outfile=outdir / "src/rtl_433/pulse_slicer.c"
     outfile.write_text(srcfile.read_text()

@@ -25,32 +25,25 @@
 
 #include "signalDecoder.h"
 
+r_device r_devices[] = {  
+  #define DECL(name) name,
+            DEVICES
+  #undef DECL
+};
+
 void rtl_433_Decoder::rtlSetup() {
   r_cfg_t* cfg = &g_cfg;
-  int rtl_433_Decoder_Stack=11500;
+  const int rtl_433_Decoder_Stack=_ookModulation ? 11500 : 20000; // per rtl_433_ESP
 
   if (!cfg->demod) {
     r_init_cfg(cfg);
 
     cfg->conversion_mode = CONVERT_SI; // Default all output to Celsius
-    if (_ookModulation) {
-      cfg->num_r_devices = NUMOF_OOK_DEVICES;
-    } else {
-      cfg->num_r_devices = NUMOF_FSK_DEVICES;
-      rtl_433_Decoder_Stack=20000;
+    cfg->num_r_devices = sizeof(r_devices) / sizeof(*r_devices);
+    cfg->devices = r_devices; 
+    for (unsigned i = 0; i < cfg->num_r_devices; i++) {
+      cfg->devices[i].protocol_num = i + 1;
     }
-    cfg->devices = (r_device*)calloc(cfg->num_r_devices, sizeof(r_device));
-
-    if (!cfg->devices) {
-      FATAL_CALLOC("cfg->devices");
-    }
-
-    if (_ookModulation) {
-      #include "ook_devices.stub"
-    } else {
-      #include "fsk_devices.stub"
-    }
-
     cfg->verbosity = rtlVerbose; // 0=normal, 1=verbose, 2=verbose decoders,
 
     // expand register_all_protocols to determine heap impact from each decoder
@@ -106,6 +99,7 @@ void rtl_433_Decoder::rtl_433_DecoderTask(void* pvParameters) {
     cfg->ctx=job->ctx;
     int events = 0;
 
+    // todo: put back in optional basic memory heap/stack debug logging
     if (thistask->_ookModulation) {
       events = run_ook_demods(&cfg->demod->r_devs, job->rtl_pulses);
     } else {
