@@ -46,6 +46,7 @@ extern "C" {
 #include "r_private.h"
 #include "rtl_433.h"
 #include "rtl_433_devices.h"
+
 }
 
 #include "log.h"

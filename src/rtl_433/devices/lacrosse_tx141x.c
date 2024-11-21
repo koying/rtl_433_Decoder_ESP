@@ -19,6 +19,7 @@ also TFA 30.3222.02 (a LaCrosse-TX141W).
 also TFA 30.3251.10 (a LaCrosse-TX141W).
 also some rebrand (ORIA WA50B) with a slightly longer timing, s.a. #2088
 also TFA 30.3243.02 (a LaCrosse-TX141Bv3)
+also LaCrosse TX141-Bv4 (seems identical to LaCrosse-TX141Bv3)
 
 LaCrosse Color Forecast Station (model C85845), or other LaCrosse product
 utilizing the remote temperature/humidity sensor TX141TH-Bv2 transmitting
@@ -112,23 +113,6 @@ static int lacrosse_tx141x_decode(r_device *decoder, bitbuffer_t *bitbuffer)
         // try again for TX141W/TX145wsdth, require at least 2 out of 3-7 repeats.
         r = bitbuffer_find_repeated_row(bitbuffer, 2, 64); // 65
     }
-
-        bitbuffer_invert(bitbuffer);
-
-     // For LACROSSE_TX141TH, do not require duplicate packets because it contains a CRC
-     // that is checked indepently. However, to simplify the code below, introduce a shortcut
-     // here instead of restructuring all following code: pre-select a row that fulfills
-     // protocol requirements (num_rows, bits_per_row and CRC) here and keep other sanity checks
-     // to the existing code below.
-     if (bitbuffer->num_rows <= 4) {
-         for (int row = 0; row < bitbuffer->num_rows; row++) {
-             if ((bitbuffer->bits_per_row[row] == 40 || bitbuffer->bits_per_row[row] == 41) &&
-                 lfsr_digest8_reflect(bitbuffer->bb[row], 4, 0x31, 0xf4) == bitbuffer->bb[row][4]) {
-                 r = row;
-             }
-         }
-     }
-
     if (r < 0) {
         return DECODE_ABORT_LENGTH;
     }
@@ -157,6 +141,7 @@ static int lacrosse_tx141x_decode(r_device *decoder, bitbuffer_t *bitbuffer)
         device = LACROSSE_TX141BV3;
     }
 
+    bitbuffer_invert(bitbuffer);
     b = bitbuffer->bb[r];
 
     if (device == LACROSSE_TX141W) {
@@ -241,7 +226,7 @@ static int lacrosse_tx141x_decode(r_device *decoder, bitbuffer_t *bitbuffer)
     }
 
     if (0 == id || (device == LACROSSE_TX141TH && (0 == humidity || humidity > 100)) || temp_c < -40.0 || temp_c > 140.0) {
-        decoder_logf(decoder, 1, __func__, "data error, id: %i, humidity:%i, temp:%f", id, humidity, temp_c);
+        decoder_logf(decoder, 1, __func__, "data error, id: %d, humidity:%d, temp:%f", id, humidity, temp_c);
         return DECODE_FAIL_SANITY;
     }
 
@@ -303,7 +288,7 @@ static int lacrosse_tx141x_decode(r_device *decoder, bitbuffer_t *bitbuffer)
     return 1;
 }
 
-static char const *output_fields[] = {
+static char const *const output_fields[] = {
         "model",
         "id",
         "channel",
@@ -318,7 +303,7 @@ static char const *output_fields[] = {
 };
 
 // note TX141W, TX145wsdth: m=OOK_PWM, s=256, l=500, r=1888, y=748
-r_device lacrosse_tx141x = {
+r_device const lacrosse_tx141x = {
         .name        = "LaCrosse TX141-Bv2, TX141TH-Bv2, TX141-Bv3, TX141W, TX145wsdth, (TFA, ORIA) sensor",
         .modulation  = OOK_PULSE_PWM,
         .short_width = 208,  // short pulse is 208 us + 417 us gap

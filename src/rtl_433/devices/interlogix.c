@@ -103,10 +103,7 @@ static int interlogix_decode(r_device *decoder, bitbuffer_t *bitbuffer)
 
     data_t *data;
     unsigned int row = 0;
-    char device_type_id[2];
     char const *device_type;
-    char device_serial[7];
-    char raw_message[7];
     int low_battery;
     char const *f1_latch_state;
     char const *f2_latch_state;
@@ -162,7 +159,8 @@ static int interlogix_decode(r_device *decoder, bitbuffer_t *bitbuffer)
         return DECODE_FAIL_MIC;
     }
 
-    sprintf(device_type_id, "%01x", (reverse8(message[2]) >> 4));
+    char device_type_id[2];
+    snprintf(device_type_id, sizeof(device_type_id), "%01x", (reverse8(message[2]) >> 4));
 
     switch ((reverse8(message[2]) >> 4)) {
     case 0xa: device_type = "contact"; break;
@@ -171,12 +169,14 @@ static int interlogix_decode(r_device *decoder, bitbuffer_t *bitbuffer)
     case 0x6: device_type = "heat"; break;
     case 0x9: device_type = "glass"; break; // switch1 changes from open to closed on trigger
 
-    default: device_type = "unknown"; return DECODE_FAIL_SANITY; break;
+    default: device_type = "unknown"; break;
     }
 
-    sprintf(device_serial, "%02x%02x%02x", reverse8(message[2]), reverse8(message[1]), reverse8(message[0]));
+    char device_serial[7];
+    snprintf(device_serial, sizeof(device_serial), "%02x%02x%02x", reverse8(message[2]), reverse8(message[1]), reverse8(message[0]));
 
-    sprintf(raw_message, "%02x%02x%02x", message[3], message[4], message[5]);
+    char raw_message[7];
+    snprintf(raw_message, sizeof(raw_message), "%02x%02x%02x", message[3], message[4], message[5]);
 
     // keyfob logic. see protocol description addendum for protocol exceptions
     if ((reverse8(message[2]) >> 4) == 0xf) {

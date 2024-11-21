@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 #include "pulse_slicer.h"
 #include "r_device.h"
@@ -409,7 +410,9 @@ void data_acquired_handler(r_device* r_dev, data_t* data) {
     }
   }
 
-  data_append(data, "protocol", "", DATA_STRING, r_dev->name, NULL);
+  //data_append(data, "protocol", "", DATA_STRING, r_dev->name,NULL);
+  data = data_str(data, "protocol", "protocol", NULL, r_dev->name);
+
   data_print_jsons(data, cfg->messageBuffer, cfg->bufferSize);
 
   // callback to external function that receives message from device (
