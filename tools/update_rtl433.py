@@ -81,7 +81,7 @@ def main():
     rtl433dir=Path(args.rtl433dir)
     outdir=Path(args.outdir)
 
-    # pulse_detect.c: fix bitbuffer init to be portable and global because it's too big to allocate on the task stack
+    # pulse_slicer.c: fix bitbuffer init to be portable and global because it's too big to allocate on the task stack
     srcfile=rtl433dir / "src/pulse_slicer.c"
     outfile=outdir / "src/rtl_433/pulse_slicer.c"
     outfile.write_text(srcfile.read_text()
