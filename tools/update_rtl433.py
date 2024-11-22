@@ -56,10 +56,14 @@ def update_rtl_433_devices(outdir):
 
 #include "r_device.h"
 
-#  define DEVICES                    \\\n""")
+#ifdef MY_RTL433_DEVICES
+#define DEVICES MY_RTL433_DEVICES
+#else
+#define DEVICES                      \\\n""")
         for outdevice in sorted(gen_devices(outdir),key=str.lower):
             outfp.write("    %-33s\\\n" % f"DECL({outdevice})")
         outfp.write("""
+#endif
 #define DECL(name) extern r_device name;
 DEVICES
 #undef DECL

@@ -7,7 +7,10 @@
 
 #include "r_device.h"
 
-#  define DEVICES                    \
+#ifdef MY_RTL433_DEVICES
+#define DEVICES MY_RTL433_DEVICES
+#else
+#define DEVICES                      \
     DECL(abmt)                       \
     DECL(acurite_00275rm)            \
     DECL(acurite_01185m)             \
@@ -269,6 +272,7 @@
     DECL(x10_sec)                    \
     DECL(yale_hsa)                   \
 
+#endif
 #define DECL(name) extern r_device name;
 DEVICES
 #undef DECL
