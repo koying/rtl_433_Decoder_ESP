@@ -2,6 +2,7 @@
 from pathlib import Path
 import argparse
 import shutil
+import re
 
 # leveraging the difficult work done by rtl_433_ESP
 # this script automates copy from a populated rtl_433 directory... it doesn't do any error checking
@@ -16,6 +17,9 @@ src/logger.c src/output_log.c src/pulse_data.c src/r_util.c src/util.c
 src/devices/*.c
 """.split()
 
+# These probably can be fixed to work if need be with a little work...
+exclude_list=set("""blueline rosstech_dcu706 secplus_v2""".split())
+
 # forked: manually review for updates
 #src/r_api.c
 #include/pulse_data.h
@@ -29,6 +33,40 @@ def do_copy_exact(rtl433dir,outdir):
         for srcfilename in rtl433dir.glob(filepattern):
             outfilename=outdir / srcfilename.relative_to(rtl433dir).as_posix().replace("src/","src/rtl_433/")
             shutil.copy(srcfilename,outfilename)
+
+def gen_devices(outdir):
+    devre=re.compile(r"r_device\s+(?:const\s+)?([^\s=]+)\s*=")
+    for outdevicefile in outdir.glob("src/rtl_433/devices/*.c"):
+        for line in outdevicefile.open("rt"):
+            devmatch=devre.match(line)
+            if devmatch is not None: 
+                devname=devmatch.groups()[0]
+                if devname not in exclude_list: yield devname
+
+def update_rtl_433_devices(outdir):
+    # create a new rtl_433_devices.h
+    outfile=outdir / "include/rtl_433_devices.h"
+    with outfile.open("wt") as outfp:
+        outfp.write("""/** @file
+    This is a generated file from tools/update_rtl433.py
+*/
+
+#ifndef INCLUDE_RTL_433_DEVICES_H_
+#define INCLUDE_RTL_433_DEVICES_H_
+
+#include "r_device.h"
+
+#  define DEVICES                    \\\n""")
+        for outdevice in sorted(gen_devices(outdir),key=str.lower):
+            outfp.write("    %-33s\\\n" % f"DECL({outdevice})")
+        outfp.write("""
+#define DECL(name) extern r_device name;
+DEVICES
+#undef DECL
+
+#endif /* INCLUDE_RTL_433_DEVICES_H_ */
+""")
+                    
 
 def main():
     rtl433dir=Path(__file__).resolve().parent.parent
@@ -47,6 +85,7 @@ def main():
                        .replace('#include <limits.h>',"#include <limits.h>\nbitbuffer_t bits;"))
 
     do_copy_exact(rtl433dir,outdir)
+    update_rtl_433_devices(outdir)
 
 if __name__ == "__main__":
     main()
