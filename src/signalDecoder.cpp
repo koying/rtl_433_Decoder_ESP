@@ -41,9 +41,6 @@ void rtl_433_Decoder::rtlSetup() {
     cfg->conversion_mode = CONVERT_SI; // Default all output to Celsius
     cfg->num_r_devices = sizeof(r_devices) / sizeof(*r_devices);
     cfg->devices = r_devices; 
-    for (unsigned i = 0; i < cfg->num_r_devices; i++) {
-      cfg->devices[i].protocol_num = i + 1;
-    }
     cfg->verbosity = rtlVerbose; // 0=normal, 1=verbose, 2=verbose decoders,
 
     // expand register_all_protocols to determine heap impact from each decoder
@@ -51,7 +48,7 @@ void rtl_433_Decoder::rtlSetup() {
 
     for (int i = 0; i < cfg->num_r_devices; i++) {
       // register all device protocols that are not disabled
-      cfg->devices[i].protocol_num = i;
+      cfg->devices[i].protocol_num = i+1;
 
       char* arg = NULL;
       if (cfg->devices[i].disabled <= 0) {
