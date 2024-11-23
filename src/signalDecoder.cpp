@@ -69,15 +69,12 @@ void rtl_433_Decoder::rtlSetup() {
   }  
 }
 
-void rtl_433_Decoder::setCallback(rtl_433_ESPCallBack callback, char* messageBuffer,
-                  int bufferSize) {
+void rtl_433_Decoder::setCallback(rtl_433_ESPCallBack callback) {
   // logprintfLn(LOG_DEBUG, "_setCallback location: %p", callback);
 
   r_cfg_t* cfg = &g_cfg;
 
   cfg->callback = callback;
-  cfg->messageBuffer = messageBuffer;
-  cfg->bufferSize = bufferSize;
 }
 
 // ---------------------------------------------------------------------------------------------------------

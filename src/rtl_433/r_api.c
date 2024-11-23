@@ -412,12 +412,20 @@ void data_acquired_handler(r_device* r_dev, data_t* data) {
 
   //data_append(data, "protocol", "", DATA_STRING, r_dev->name,NULL);
   data = data_str(data, "protocol", "protocol", NULL, r_dev->name);
+  
+  size_t message_size = 2000; // should be plenty big
+  char *message       = (char *) malloc(message_size);
+  if (!message) {
+      WARN_MALLOC("data_acquired json callback message alloc");
+      data_free(data);
+      return; // NOTE: skip output on alloc failure.
+  }
 
-  data_print_jsons(data, cfg->messageBuffer, cfg->bufferSize);
+  data_print_jsons(data, message, message_size);
 
   // callback to external function that receives message from device (
   // rtl_433_Decoder )
-  (cfg->callback)(cfg->messageBuffer,cfg->ctx);
+  (cfg->callback)(message,cfg->ctx);
   data_free(data);
 }
 

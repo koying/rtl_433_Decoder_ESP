@@ -136,8 +136,6 @@ typedef struct r_cfg {
   //
   //  TODO: rtl_433_Decoder_ESP additions
   //
-  char *messageBuffer; // message buffer for message callback
-  int bufferSize;      // size of message buffer for message callback
   void *ctx;           // context pointer for callback
   
   /**

@@ -71,9 +71,11 @@ public:
   void rtlSetup();
   /// @brief Set callback function for receiving decoded messages
   /// @param callback Pointer to callback function
-  /// @param messageBuffer Pointer to buffer for message
-  /// @param bufferSize Size of message buffer
-  void setCallback(rtl_433_ESPCallBack callback,char* messageBuffer,int bufferSize);
+  // The callback function should be of type:  void (*callback)(char *message, void *ctx);
+  //   where message will point to the json formatted string of the decoded message.  You *must* free() this
+  //   when you are done with your own processing of it!  ctx is a context pointer you can optionally 
+  //   set via the processRaw method.
+  void setCallback(rtl_433_ESPCallBack callback);
   // process rtl_433 format pulsa_data_t pulses
   void processSignal(pulse_data_t* rtl_pulses,void* ctx=nullptr);
   /// @brief Process raw format data.

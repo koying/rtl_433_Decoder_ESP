@@ -14,7 +14,7 @@ example link WIP
 See: [tools/update_rtl433.py](https://github.com/juanboro/rtl_433_Decoder_ESP/blob/main/tools/update_rtl433.py)
 
 # Todo
-* [] Allow reporting the device enabled/disabled list
-* [] Allow enabling disabled devices
-* [] Init class by default to allow OOK and FSK, and then control FSK/OOK on per signal basis (multiple receiver support)
-* [] Re-enable _some_ of the debugging from rtl_433_ESP
+* [ ] Allow reporting the device enabled/disabled list
+* [ ] Allow enabling disabled devices, and disable e
+* [ ] Init class by default to allow OOK and FSK, and then control FSK/OOK on per signal basis (multiple receiver support)
+* [ ] Re-enable _some_ of the debugging from rtl_433_ESP
