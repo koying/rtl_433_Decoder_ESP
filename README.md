@@ -12,7 +12,7 @@ void process_callback(char *msg, void *ctx) {
   free(msg);
 }
 
-// call processRaw with a vecor of on(+)/off(-) integer pulses
+// call processRaw with a vector of on(+)/off(-) integer pulses
 void recv_raw(rtl_433_Decoder &rd,std::vector<int> &rawdata) {
   rd.processRaw(rawdata, nullptr);
 }
