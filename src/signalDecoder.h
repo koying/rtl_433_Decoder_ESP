@@ -76,19 +76,20 @@ public:
   //   when you are done with your own processing of it!  ctx is a context pointer you can optionally 
   //   set via the processRaw method.
   void setCallback(rtl_433_ESPCallBack callback);
-  // process rtl_433 format pulsa_data_t pulses
+  // process rtl_433 format pulse_data_t pulses
   void processSignal(pulse_data_t* rtl_pulses,void* ctx=nullptr);
   /// @brief Process raw format data.
   /// @param rawdata Vector of on/mark (positive integer microseconds) and off/space (negative integer microseconds)
   /// @param ctx Optional context pointer for callback
   void processRaw(std::vector<int>& rawdata,void* ctx=nullptr);
 
+  unsigned int unparsedSignals = 0;
+
 protected:
   static void rtl_433_DecoderTask(void* pvParameters);
 
 private:
   bool _ookModulation = true;
-  int unparsedSignals = 0;
 
   int rtlVerbose = 0;
 
