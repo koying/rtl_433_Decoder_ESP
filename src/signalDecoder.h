@@ -81,7 +81,7 @@ public:
   /// @brief Process raw format data.
   /// @param rawdata Vector of on/mark (positive integer microseconds) and off/space (negative integer microseconds)
   /// @param ctx Optional context pointer for callback
-  void processRaw(std::vector<int>& rawdata,void* ctx=nullptr);
+  void processRaw(std::vector<int32_t>& rawdata,void* ctx=nullptr);
 
   unsigned int unparsedSignals = 0;
 

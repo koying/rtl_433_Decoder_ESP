@@ -126,7 +126,7 @@ void rtl_433_Decoder::processSignal(pulse_data_t* rtl_pulses,void* ctx) {
   }
 }
 
-void rtl_433_Decoder::processRaw(std::vector<int> &rawdata,void* ctx) {
+void rtl_433_Decoder::processRaw(std::vector<int32_t> &rawdata,void* ctx) {
   pulse_data_t* rtl_pulses = (pulse_data_t*)heap_caps_calloc(1, sizeof(pulse_data_t), MALLOC_CAP_INTERNAL);
   int maxsize = sizeof(rtl_pulses->pulse) / sizeof(*rtl_pulses->pulse);
   int rawcount=rawdata.size();
