@@ -45,6 +45,7 @@
     DECL(bresser_7in1)               \
     DECL(bresser_leakage)            \
     DECL(bresser_lightning)          \
+    DECL(bresser_st1005h)            \
     DECL(bt_rain)                    \
     DECL(burnhardbbq)                \
     DECL(calibeur_RF104)             \
@@ -187,6 +188,7 @@
     DECL(prologue)                   \
     DECL(proove)                     \
     DECL(quhwa)                      \
+    DECL(quinetic)                   \
     DECL(radiohead_ask)              \
     DECL(rainpoint)                  \
     DECL(regency_fan)                \
