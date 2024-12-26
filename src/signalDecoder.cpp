@@ -143,6 +143,14 @@ void rtl_433_Decoder::processRaw(std::vector<int32_t> &rawdata,void* ctx) {
   rtl_pulses->num_pulses=i;
 
   processSignal(rtl_pulses,ctx);
-
 }
 
+void rtl_433_Decoder::processRFRaw(char const *p,void* ctx) {
+  pulse_data_t* rtl_pulses = (pulse_data_t*)heap_caps_calloc(1, sizeof(pulse_data_t), MALLOC_CAP_INTERNAL);
+
+  if (rfraw_parse(rtl_pulses,p)) {
+    processSignal(rtl_pulses,ctx);
+  } else {
+    free(rtl_pulses);
+  }
+}

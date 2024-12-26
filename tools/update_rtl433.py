@@ -13,7 +13,7 @@ include/optparse.h include/output_log.h include/pulse_detect.h include/pulse_sli
 include/r_api.h include/r_device.h include/r_util.h include/rfraw.h include/util.h
 include/data.h include/bit_util.h
 src/abuf.c src/bitbuffer.c src/compat_time.c src/data.c src/decoder_util.c src/list.c
-src/logger.c src/output_log.c src/pulse_data.c src/r_util.c src/util.c srf/rf_raw.c
+src/logger.c src/output_log.c src/pulse_data.c src/r_util.c src/util.c src/rfraw.c
 src/devices/*.c
 """.split()
 

@@ -46,6 +46,7 @@ extern "C" {
 #include "r_private.h"
 #include "rtl_433.h"
 #include "rtl_433_devices.h"
+#include "rfraw.h"
 
 }
 
@@ -82,6 +83,10 @@ public:
   /// @param rawdata Vector of on/mark (positive integer microseconds) and off/space (negative integer microseconds)
   /// @param ctx Optional context pointer for callback
   void processRaw(std::vector<int32_t>& rawdata,void* ctx=nullptr);
+  /// @brief Process RF raw format data.
+  /// @param p Pointer to RFraw null-term string data
+  /// @param ctx Optional context pointer for callback
+  void processRFRaw(char const *p,void* ctx=nullptr);
 
   unsigned int unparsedSignals = 0;
 
