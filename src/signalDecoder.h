@@ -87,8 +87,12 @@ public:
   /// @param p Pointer to RFraw null-term string data
   /// @param ctx Optional context pointer for callback
   void processRFRaw(char const *p,void* ctx=nullptr);
-
+  /// @brief set modululation to ook
+  /// @param ook true=ook, false=fsk
+  void setook(bool ook) { _ookModulation=ook; }
   unsigned int unparsedSignals = 0;
+
+  r_cfg_t g_cfg; // Global config object
 
 protected:
   static void rtl_433_DecoderTask(void* pvParameters);
@@ -98,7 +102,6 @@ private:
 
   int rtlVerbose = 0;
 
-  r_cfg_t g_cfg; // Global config object
   TaskHandle_t rtl_433_DecoderHandle;
   QueueHandle_t rtl_433_Queue;
 };
