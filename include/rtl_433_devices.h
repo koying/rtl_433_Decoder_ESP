@@ -113,6 +113,9 @@
     DECL(geo_minim)                  \
     DECL(govee)                      \
     DECL(govee_h5054)                \
+    DECL(gridstream192)              \
+    DECL(gridstream384)              \
+    DECL(gridstream96)               \
     DECL(gt_tmbbq05)                 \
     DECL(gt_wt_02)                   \
     DECL(gt_wt_03)                   \
@@ -191,8 +194,10 @@
     DECL(quinetic)                   \
     DECL(radiohead_ask)              \
     DECL(rainpoint)                  \
+    DECL(rainpoint_hcs012arf)        \
     DECL(regency_fan)                \
     DECL(revolt_nc5462)              \
+    DECL(revolt_zx7717)              \
     DECL(rftech)                     \
     DECL(risco_agility)              \
     DECL(rojaflex)                   \
@@ -244,6 +249,7 @@
     DECL(tpms_eezrv)                 \
     DECL(tpms_elantra2012)           \
     DECL(tpms_ford)                  \
+    DECL(tpms_gm)                    \
     DECL(tpms_hyundai_vdo)           \
     DECL(tpms_jansite)               \
     DECL(tpms_jansite_solar)         \
