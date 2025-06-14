@@ -43,4 +43,4 @@ See: [tools/update_rtl433.py](https://github.com/juanboro/rtl_433_Decoder_ESP/bl
 * [X] Init class by default to allow OOK and FSK, and then control FSK/OOK on per signal basis (multiple receiver support)
 * [ ] Actually test with real FSK signals.
 * [ ] Re-enable _some_ of the debugging from rtl_433_ESP
-For the first 3 above - see basic esphome [example](https://github.com/juanboro/esphome-rtl_433-decoder/blob/main/rtl_433_protocols.yaml)
+For the first 3 above - see basic esphome [example](https://github.com/juanboro/esphome-rtl_433-decoder/blob/main/examples/rtl_433_protocols.yaml)
