@@ -25,7 +25,7 @@ void init() {
 }
 ```
 
-An example used for a ESPHome component can be found [here](https://github.com/juanboro/esphome-rtl_433-decoder/blob/main/components/rtl_433/rtl_433.cpp)
+An example used for a ESPHome [component](https://github.com/juanboro/esphome-rtl_433-decoder) can be found [here](https://github.com/juanboro/esphome-rtl_433-decoder/blob/main/components/rtl_433/rtl_433.cpp)
 
 ## Recommendations
 The main goal here is for being able to decode known devices, not as a signal analysis tool.  I'd recommend using rtl_sdr on a PC with a SDR (as well as other tools) to determine/test specific signals, and then configure this once working devices are determined for rtl_433.
